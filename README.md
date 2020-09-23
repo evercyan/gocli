@@ -12,9 +12,9 @@ self-use go terminal utils
 
 ---
 
-- [Color](##Color) output `color`, `style` text to terminal
-- [Table](##Table) output `table` to terminal
-- [Spinner](##Spinner)  simple and configurable terminal `spinner`
+- [Color](#Color) output `color`, `style` text to terminal
+- [Table](#Table) output `table` to terminal
+- [Spinner](#Spinner)  simple and configurable terminal `spinner`
 
 ---
 
