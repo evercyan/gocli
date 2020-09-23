@@ -88,7 +88,7 @@ func main() {
 | --- | --- | --- |
 | `table.Style(v)`    | set border style  | `table.Solid`<br>`table.Dashed`<br>`table.Dotted` |
 | `table.Header(v)`   | set table header  | []string{"col1", "col2"} |
-| `table.Border(v)`   | display table data border-bottom  | true |
+| `table.Border(v)`   | display table data border-bottom  | `true` |
 
 ### Table Snapshot
 
