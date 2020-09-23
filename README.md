@@ -4,7 +4,7 @@
 
 self-use go terminal utils
 
-[![travis-ci](https://www.travis-ci.org/evercyan/gocli.svg?branch=master)](https://www.travis-ci.org/evercyan/gocli)
+[![travis-ci](https://travis-ci.com/evercyan/gocli.svg?branch=master)](https://travis-ci.com/github/evercyan/gocli)
 [![codecov](https://codecov.io/gh/evercyan/gocli/branch/master/graph/badge.svg)](https://codecov.io/gh/evercyan/gocli)
 [![goreportcard](https://goreportcard.com/badge/github.com/evercyan/gocli)](https://goreportcard.com/report/github.com/evercyan/gocli)
 
