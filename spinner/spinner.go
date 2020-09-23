@@ -1,3 +1,11 @@
+/**
+ * - 不监听系统中断信号, 避免多 goroutine 时, 无法中断整个进程
+ * - 在 loading 时, 不对光标进行隐藏处理, 避免意外中断无法对光标进行回显
+ * - 偶现重写 line 时会有残余, todo..
+ *
+ * PS: New 完一定注意要有后续 Success 或 Fail 处理, 避免造成 goroutine 泄漏
+ */
+
 package spinner
 
 import (
@@ -73,7 +81,6 @@ func (s *spinner) Fail(messages ...string) {
 
 func (s *spinner) start() {
 	go func() {
-		cursor.HideCursor()
 		speed := s.speed
 		ticker := time.NewTicker(time.Millisecond * time.Duration(int64(speed)))
 		index := 0
@@ -82,7 +89,6 @@ func (s *spinner) start() {
 			case <-ticker.C:
 				fmt.Printf("\r%s %s", s.loading[index], s.message)
 				index = (index + 1) % len(s.loading)
-				// reset spinner speed
 				if speed != s.speed {
 					ticker.Stop()
 					speed = s.speed
@@ -97,6 +103,7 @@ func (s *spinner) start() {
 
 func (s *spinner) stop(status bool, messages ...string) {
 	s.stopOnce.Do(func() {
+		close(s.stopChan)
 		cursor.ClearLine()
 		message := s.message
 		if len(messages) > 0 {
@@ -107,8 +114,5 @@ func (s *spinner) stop(status bool, messages ...string) {
 		} else {
 			color.New("\r"+s.symbol[1], message).Color(color.Red).Render()
 		}
-
-		close(s.stopChan)
-		cursor.ShowCursor()
 	})
 }
