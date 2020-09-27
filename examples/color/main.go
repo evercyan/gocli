@@ -14,11 +14,11 @@ func main() {
 		for bc := color.NoBgColor; bc <= color.BgWhite; bc++ {
 			// 字体颜色
 			for fc := color.NoColor; fc <= color.White; fc++ {
-				fmt.Printf(color.New(
+				fmt.Printf(color.NewColor(
 					s.String(),
 					bc.String(),
 					fc.String(),
-				).Style(s).Color(fc).BgColor(bc).Content() + " ")
+				).Style(s).FgColor(fc).BgColor(bc).Content() + " ")
 			}
 			fmt.Println("")
 		}

@@ -1,10 +1,10 @@
 package color
 
-// display style
-type style int
+// Style 样式枚举
+type Style int
 
 const (
-	NoStyle      style = iota // 默认
+	NoStyle      Style = iota // 默认
 	Bold                      // 加粗
 	Faint                     // 弱化
 	Italic                    // 斜体
@@ -16,8 +16,8 @@ const (
 	CrossedOut                // 中划
 )
 
-// String return description
-func (a style) String() string {
+// String 样式描述
+func (a Style) String() string {
 	switch a {
 	case NoStyle:
 		return "默认"
@@ -44,11 +44,11 @@ func (a style) String() string {
 	}
 }
 
-// foreground color (Basic 30, Hi-Intensity 90)
-type fgColor int
+// FgColor 前景色枚举 (Basic 30, Hi-Intensity 90)
+type FgColor int
 
 const (
-	NoColor fgColor = iota + 89 // 默认
+	NoColor FgColor = iota + 89 // 默认
 	Black                       // 黑色
 	Red                         // 红色
 	Green                       // 绿色
@@ -59,8 +59,8 @@ const (
 	White                       // 白色
 )
 
-// String return description
-func (fc fgColor) String() string {
+// String 前景色描述
+func (fc FgColor) String() string {
 	switch fc {
 	case NoColor:
 		return "默认"
@@ -85,11 +85,11 @@ func (fc fgColor) String() string {
 	}
 }
 
-// background color (Basic 40, Hi-Intensity 100)
-type bgColor int
+// BgColor 背景色枚举 (Basic 40, Hi-Intensity 100)
+type BgColor int
 
 const (
-	NoBgColor bgColor = iota + 99 // 默认背景
+	NoBgColor BgColor = iota + 99 // 默认背景
 	BgBlack                       // 黑色背景
 	BgRed                         // 红色背景
 	BgGreen                       // 绿色背景
@@ -100,8 +100,8 @@ const (
 	BgWhite                       // 白色背景
 )
 
-// String return description
-func (bc bgColor) String() string {
+// String 背景色描述
+func (bc BgColor) String() string {
 	switch bc {
 	case NoBgColor:
 		return "默认背景"

@@ -1,26 +1,9 @@
 package table
 
-import "errors"
-
-// border style enum
-type style int
-
-const (
-	Solid  style = iota // 实线
-	Dashed              // 虚线(类 mysql 终端表格)
-	Dotted              // 点线
+import (
+	"errors"
 )
 
-func (s style) Valid() bool {
-	switch s {
-	case Solid, Dashed, Dotted:
-		return true
-	default:
-		return false
-	}
-}
-
-// border struct
 type border struct {
 	H  rune // 水平 ─
 	V  rune // 垂直 │
@@ -35,9 +18,16 @@ type border struct {
 	UR rune // 转弯(上右) └
 }
 
-// border style map
+// 边界样式枚举
+const (
+	Solid  = iota // 实线
+	Dashed        // 虚线(类 mysql 终端表格)
+	Dotted        // 点线
+)
+
+// styles 边界样式字典
 // ref: http://www.tamasoft.co.jp/en/general-info/unicode.html
-var styles = map[style]border{
+var styles = map[int]border{
 	Solid:  {'─', '│', '┼', '┴', '┬', '┤', '├', '┐', '┌', '┘', '└'},
 	Dashed: {'-', '|', '+', '+', '+', '+', '+', '+', '+', '+', '+'},
 	Dotted: {'*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'},

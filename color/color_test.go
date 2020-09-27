@@ -7,9 +7,9 @@ import (
 )
 
 func TestColor(t *testing.T) {
-	assert.NotEmpty(t, New("a").Style(Bold).Color(Red).BgColor(BgBlack).Content())
+	assert.NotEmpty(t, NewColor("a").Style(Bold).FgColor(Red).BgColor(BgBlack).Content())
 
-	assert.NotEmpty(t, New("a").Style(1000).Color(1000).BgColor(1000).Content())
+	assert.NotEmpty(t, NewColor("a").Style(1000).FgColor(1000).BgColor(1000).Content())
 
-	New("a", "b", "c").Color(Green).Render()
+	NewColor("a", "b", "c").FgColor(Green).Render()
 }

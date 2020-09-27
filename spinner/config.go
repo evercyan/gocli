@@ -1,6 +1,6 @@
 package spinner
 
-// loading style
+// 加载样式字符
 var (
 	// LoadingA ...
 	LoadingA = []string{"⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"}
@@ -14,7 +14,7 @@ var (
 	LoadingE = []string{"▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"}
 )
 
-// status symbol
+// 状态样式字符
 var (
 	// SymbolA ...
 	SymbolA = []string{"✔︎", "✘"}

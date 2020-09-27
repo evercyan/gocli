@@ -1,12 +1,16 @@
+// 终端加载渲染
+// 	s := NewSpinner("spinner message")
+// 	time.Sleep(time.Second)
+// 	s.Success("spinner success")
+package spinner
+
 /**
  * - 不监听系统中断信号, 避免多 goroutine 时, 无法中断整个进程
  * - 在 loading 时, 不对光标进行隐藏处理, 避免意外中断无法对光标进行回显
- * - 偶现重写 line 时会有残余, todo..
+ * - 偶现重写 line 时会有残留多余字符, todo..
  *
- * PS: New 完一定注意要有后续 Success 或 Fail 处理, 避免造成 goroutine 泄漏
+ * PS: 初始化完一定要有 Success 或 Fail 处理, 避免造成 goroutine 泄漏
  */
-
-package spinner
 
 import (
 	"fmt"
@@ -18,17 +22,26 @@ import (
 	"github.com/evercyan/gocli/cursor"
 )
 
-type spinner struct {
-	message  string    // display message
-	stopChan chan bool // stop signal
-	stopOnce sync.Once // done flag
-	loading  []string  // loading style
-	symbol   []string  // status symbol
-	speed    int       // spinner speed
+// Spinner interface
+type Spinner interface {
+	Loading([]string) Spinner // 设置加载样式字符
+	Symbol([]string) Spinner  // 设置状态样式字符
+	Speed(int) Spinner        // 设置加载速度
+	Success(...string)        // 加载成功
+	Fail(...string)           // 加载失败
 }
 
-// New return spinner instance
-func New(messages ...string) *spinner {
+type spinner struct {
+	message  string    // 显示消息
+	stopChan chan bool // 中止信号
+	stopOnce sync.Once // 中止标识
+	loading  []string  // 加载样式字符
+	symbol   []string  // 状态样式字符
+	speed    int       // 加载速度
+}
+
+// NewSpinner ...
+func NewSpinner(messages ...string) Spinner {
 	s := &spinner{
 		message:  strings.Join(messages, " "),
 		stopChan: make(chan bool),
@@ -40,24 +53,24 @@ func New(messages ...string) *spinner {
 	return s
 }
 
-// Loading set loading style
-func (s *spinner) Loading(loading []string) *spinner {
+// Loading 设置加载样式字符
+func (s *spinner) Loading(loading []string) Spinner {
 	if len(loading) > 0 {
 		s.loading = loading
 	}
 	return s
 }
 
-// Symbol set status symbol
-func (s *spinner) Symbol(symbol []string) *spinner {
+// Symbol 设置状态样式字符
+func (s *spinner) Symbol(symbol []string) Spinner {
 	if len(symbol) == 2 {
 		s.symbol = symbol
 	}
 	return s
 }
 
-// Loading set loading style
-func (s *spinner) Speed(ms int) *spinner {
+// Speed 设置加载速度
+func (s *spinner) Speed(ms int) Spinner {
 	if ms < 10 {
 		ms = 10
 	}
@@ -68,13 +81,13 @@ func (s *spinner) Speed(ms int) *spinner {
 	return s
 }
 
-// Success stop the spinner with success status
+// Success 加载成功
 func (s *spinner) Success(messages ...string) {
 	s.stop(true, messages...)
 	return
 }
 
-// Fail stop the spinner with fail status
+// Fail 加载失败
 func (s *spinner) Fail(messages ...string) {
 	s.stop(false, messages...)
 }
@@ -110,9 +123,9 @@ func (s *spinner) stop(status bool, messages ...string) {
 			message = strings.Join(messages, " ")
 		}
 		if status {
-			color.New("\r"+s.symbol[0], message).Color(color.Green).Render()
+			color.NewColor("\r"+s.symbol[0], message).FgColor(color.Green).Render()
 		} else {
-			color.New("\r"+s.symbol[1], message).Color(color.Red).Render()
+			color.NewColor("\r"+s.symbol[1], message).FgColor(color.Red).Render()
 		}
 	})
 }

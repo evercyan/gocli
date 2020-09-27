@@ -10,11 +10,11 @@ import (
 func basic() {
 	fmt.Println("\n-------------------------------- basic")
 
-	s1 := spinner.New("success message")
+	s1 := spinner.NewSpinner("success message")
 	time.Sleep(1 * time.Second)
 	s1.Success("success")
 
-	s2 := spinner.New("fail message")
+	s2 := spinner.NewSpinner("fail message")
 	time.Sleep(1 * time.Second)
 	s2.Fail("fail")
 }
@@ -22,7 +22,7 @@ func basic() {
 func speed() {
 	fmt.Println("\n-------------------------------- speed")
 
-	s := spinner.New("reset speed")
+	s := spinner.NewSpinner("reset speed")
 	time.Sleep(3 * time.Second)
 	s.Speed(10)
 	time.Sleep(3 * time.Second)
@@ -40,7 +40,7 @@ func loading() {
 		spinner.LoadingE,
 	}
 	for _, loading := range loadings {
-		sl := spinner.New(loading...).Loading(loading)
+		sl := spinner.NewSpinner(loading...).Loading(loading)
 		time.Sleep(2 * time.Second)
 		sl.Success()
 	}
@@ -57,8 +57,8 @@ func symbol() {
 		spinner.SymbolE,
 	}
 	for _, symbol := range symbols {
-		s1 := spinner.New(symbol...).Symbol(symbol)
-		s2 := spinner.New(symbol...).Symbol(symbol)
+		s1 := spinner.NewSpinner(symbol...).Symbol(symbol)
+		s2 := spinner.NewSpinner(symbol...).Symbol(symbol)
 		time.Sleep(2 * time.Second)
 		s1.Success()
 		s2.Fail()

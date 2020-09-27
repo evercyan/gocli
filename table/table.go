@@ -1,3 +1,6 @@
+// 终端表格渲染
+// 	list := [][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
+// 	table.NewTable(list).Render()
 package table
 
 import (
@@ -5,79 +8,84 @@ import (
 	"reflect"
 )
 
-type table struct {
-	elem    interface{} // origin data
-	style   style       // border style enum
-	border  bool        // whether display border-bottom
-	headers []string    // header list
-	widths  []int       // column width list
-	rows    [][]string  // data list
+type Table interface {
+	Style(int) Table       // 设置边界样式
+	Border(bool) Table     // 设置是否显示内容区下边界
+	Header([]string) Table // 设置表格头部数据
+	Content() string       // 返回渲染后文本内容
+	Render()               // 输出渲染后文本内容
 }
 
-// New support type: []struct, []slice...
-func New(elem interface{}) *table {
+type table struct {
+	elem    interface{} // 原始数据
+	style   int         // 边界样式枚举值
+	border  bool        // 是否显示下边界
+	headers []string    // 表格头部
+	widths  []int       // 列宽
+	rows    [][]string  // 显示数据
+}
+
+// NewTable ...
+func NewTable(elem interface{}) Table {
 	return &table{
-		elem:  elem,
-		style: Solid,
+		elem: elem,
 	}
 }
 
-// Style ...
-func (t *table) Style(s style) *table {
-	if s.Valid() {
+// Style 设置边界样式
+func (t *table) Style(s int) Table {
+	if _, ok := styles[s]; ok {
 		t.style = s
 	}
 	return t
 }
 
-// Border ...
-func (t *table) Border(border bool) *table {
+// Border 设置是否显示内容区下边界
+func (t *table) Border(border bool) Table {
 	t.border = border
 	return t
 }
 
-// Header ...
-func (t *table) Header(v []string) *table {
+// Header 设置表格头部数据
+func (t *table) Header(v []string) Table {
 	if len(v) > 0 {
 		t.headers = v
 	}
 	return t
 }
 
-// Content ...
+// Content 返回渲染后文本内容
 func (t *table) Content() (content string) {
 	err := t.parse()
 	if err != nil {
 		return err.Error()
 	}
-
 	if len(t.rows) == 0 {
 		return content
 	}
 	b := styles[t.style]
 	headerT, headerM, headerB, footer := []rune{b.DR}, []rune{b.V}, []rune{b.VR}, []rune{b.UR}
 	for i, width := range t.widths {
-		// width + 2, two spaces left and right
+		// 预留左右两空格长度
 		headerT = append(headerT, []rune(t.repeat(b.H, width+2)+string(b.HD))...)
 		headerB = append(headerB, []rune(t.repeat(b.H, width+2)+string(b.VH))...)
 		footer = append(footer, []rune(t.repeat(b.H, width+2)+string(b.HU))...)
 
 		if len(t.headers) > 0 {
-			// with header, get actual display length
 			l := width - t.getLentgh([]rune(t.headers[i])) + 1
 			headerM = append(headerM, []rune(" "+t.headers[i]+t.repeat(' ', l)+string(b.V))...)
 		}
 	}
 	headerT[len(headerT)-1], headerB[len(headerB)-1], footer[len(footer)-1] = b.DL, b.VL, b.UL
 
-	// header area
+	// 头部区域
 	content += string(headerT) + "\n"
 	if len(t.headers) > 0 {
 		content += string(headerM) + "\n"
 		content += string(headerB) + "\n"
 	}
 
-	// body area
+	// 内容区域
 	for i, row := range t.rows {
 		body := []rune{b.V}
 		for i, width := range t.widths {
@@ -90,17 +98,17 @@ func (t *table) Content() (content string) {
 		}
 	}
 
-	// footer area
+	// 底部区域
 	content += string(footer)
 	return content
 }
 
-// Render ...
+// Render 输出渲染后文本内容
 func (t *table) Render() {
 	fmt.Println(t.Content() + "\n")
 }
 
-// parse ...
+// parse 解析元数据
 func (t *table) parse() (err error) {
 	value := reflect.ValueOf(t.elem)
 	if value.Kind() != reflect.Slice && value.Kind() != reflect.Array {
@@ -118,7 +126,6 @@ func (t *table) parse() (err error) {
 			iv = iv.Elem()
 			it = it.Elem()
 		}
-		// check header & filed length
 		headerLen := len(t.headers)
 		if iv.Kind() == reflect.Struct {
 			if headerLen > 0 && headerLen != iv.NumField() {
@@ -129,7 +136,7 @@ func (t *table) parse() (err error) {
 				cn := it.Field(n).Name
 				cv := fmt.Sprintf("%+v", iv.FieldByName(cn).Interface())
 				row = append(row, cv)
-				// parse struct tag "table" to header
+				// 解析结构体中的 "table" 作为头部标题
 				if index == 0 {
 					ct := it.Field(n).Tag.Get("table")
 					if ct == "" {
@@ -143,7 +150,6 @@ func (t *table) parse() (err error) {
 				if t.widths[n] < len(cv) {
 					t.widths[n] = len(cv)
 				}
-				// cal column max width
 				if headerLen > 0 && len(t.headers[n]) > t.widths[n] {
 					t.widths[n] = len(t.headers[n])
 				}
@@ -163,7 +169,6 @@ func (t *table) parse() (err error) {
 				if len(cv) > t.widths[n] {
 					t.widths[n] = len(cv)
 				}
-				// cal column max width
 				if headerLen > 0 && len(t.headers[n]) > t.widths[n] {
 					t.widths[n] = len(t.headers[n])
 				}
@@ -185,7 +190,7 @@ func (t *table) repeat(char rune, num int) string {
 	return string(s)
 }
 
-// getLentgh get actual display length
+// getLentgh 获取实际显示长度
 func (t *table) getLentgh(r []rune) int {
 	length := len(r)
 	for _, v := range r {

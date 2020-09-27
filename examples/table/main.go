@@ -26,16 +26,16 @@ var (
 func main() {
 	fmt.Println("-------------------------------- border style")
 	for s := table.Solid; s <= table.Dotted; s++ {
-		table.New(structList).Style(s).Render()
+		table.NewTable(structList).Style(s).Render()
 	}
 
 	fmt.Println("-------------------------------- other")
 	fmt.Println("get header from  struct tag `table`:")
-	table.New(structList).Render()
+	table.NewTable(structList).Render()
 	fmt.Println("custom header:")
-	table.New(structList).Header([]string{"col1", "col2"}).Border(true).Render()
+	table.NewTable(structList).Header([]string{"col1", "col2"}).Border(true).Render()
 	fmt.Println("show data border-bottom:")
-	table.New(numberList).Border(true).Render()
+	table.NewTable(numberList).Border(true).Render()
 	fmt.Println("with color:")
-	color.New(table.New(structList).Content()).Color(color.Green).Render()
+	color.NewColor(table.NewTable(structList).Content()).FgColor(color.Green).Render()
 }

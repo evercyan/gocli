@@ -41,27 +41,27 @@ var (
 )
 
 func TestTable(t *testing.T) {
-	assert.NotEmpty(t, New(structList).Style(Dashed).Border(true).Content())
-	assert.NotEmpty(t, New(structList).Style(100).Content())
-	assert.NotEmpty(t, New(structList).Header([]string{"Cooooooooooooool1", "Col2"}).Content())
-	assert.NotEmpty(t, New(numberList).Header([]string{"Cooooooooooooool1", "Col2", "Col3"}).Content())
-	assert.NotEmpty(t, New(stringList).Content())
-	New(numberList).Render()
+	assert.NotEmpty(t, NewTable(structList).Style(Dashed).Border(true).Content())
+	assert.NotEmpty(t, NewTable(structList).Style(100).Content())
+	assert.NotEmpty(t, NewTable(structList).Header([]string{"Cooooooooooooool1", "Col2"}).Content())
+	assert.NotEmpty(t, NewTable(numberList).Header([]string{"Cooooooooooooool1", "Col2", "Col3"}).Content())
+	assert.NotEmpty(t, NewTable(stringList).Content())
+	NewTable(numberList).Render()
 }
 
 func TestTableCoverage(t *testing.T) {
-	assert.NotEmpty(t, New(numberList).Style(100).Content())
-	assert.NotNil(t, New(1).Content())
-	assert.NotNil(t, New(structPtrList).Content())
-	assert.NotNil(t, New([]int{1}).Content())
-	assert.NotNil(t, New([][]map[string]string{
+	assert.NotEmpty(t, NewTable(numberList).Style(100).Content())
+	assert.NotNil(t, NewTable(1).Content())
+	assert.NotNil(t, NewTable(structPtrList).Content())
+	assert.NotNil(t, NewTable([]int{1}).Content())
+	assert.NotNil(t, NewTable([][]map[string]string{
 		{
 			{
 				"a": "a",
 			},
 		},
 	}).Content())
-	assert.NotNil(t, New([][]int{}).Content())
-	assert.NotNil(t, New(structList).Header([]string{"c1"}).Content())
-	assert.NotNil(t, New(numberList).Header([]string{"c1"}).Content())
+	assert.NotNil(t, NewTable([][]int{}).Content())
+	assert.NotNil(t, NewTable(structList).Header([]string{"c1"}).Content())
+	assert.NotNil(t, NewTable(numberList).Header([]string{"c1"}).Content())
 }
